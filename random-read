@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+
+# Include the necessary modules:
+import argparse
+import logging
+import sys
+from random import choices
+
+# Define a version for your code:
+__version__ = "0.1.0"
+
+# Define a function that returns an error with a sensible error message:
+def error(msg, exit_code=1):
+    logging.error(msg)
+    sys.exit(exit_code)
+
+if __name__ == "__main__":
+    # Set the CLI. This is the primary way that your users will interact with your program.
+    parser = argparse.ArgumentParser(description="Generate random FASTQ data")
+    parser.add_argument("-V", "--version", action="version", version=f"%(prog)s {__version__}")
+    parser.add_argument("-v", "--verbose", dest="verbosity", default="warning", choices=["error", "warning", "info", "debug"], help=f"Set logging level (default warning")
+    parser.add_argument(dest="n_reads", type=int, metavar="N", help="Number of reads to generate")
+    args = parser.parse_args()
+
+    # Set up logging:
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=args.verbosity.upper())
+    
+    # Define the nucleotide set:
+    nucleotides = "ACGT"
+    logging.info(f"selecting from nucleotide character set: {nucleotides}")
+
+    # Define the phred score set:
+    phred = """!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJ"""
+    logging.info(f"selecting from PHRED character set: {phred}")
+
+    # Generate the random reads:
+    logging.info(f"generating {args.n_reads} reads")
+    for read_i in range(args.n_reads):
+        print(f"@READ_{read_i + 1}")
+        print("".join(choices(nucleotides, k=10)))
+        print("+")
+        print("".join(choices(phred, k=10)))
