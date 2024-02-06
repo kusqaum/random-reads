@@ -7,7 +7,7 @@ import sys
 from random import choices
 
 # Define a version for your code:
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 # Define a function that returns an error with a sensible error message:
 def error(msg, exit_code=1):
@@ -21,6 +21,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--verbose", dest="verbosity", default="warning", choices=["error", "warning", "info", "debug"], help=f"Set logging level (default warning")
     parser.add_argument(dest="n_reads", type=int, metavar="N", help="Number of reads to generate")
     args = parser.parse_args()
+    parser.add_argument("-l", "--length", dest="length", type=int, default = "100", metavar="N", help="Read length to yield")
 
     # Set up logging:
     logging.basicConfig(format="%(levelname)s: %(message)s", level=args.verbosity.upper())
@@ -37,6 +38,6 @@ if __name__ == "__main__":
     logging.info(f"generating {args.n_reads} reads")
     for read_i in range(args.n_reads):
         print(f"@READ_{read_i + 1}")
-        print("".join(choices(nucleotides, k=10)))
+        print("".join(choices(nucleotides, k=args.length)))
         print("+")
-        print("".join(choices(phred, k=10)))
+        print("".join(choices(phred, k=args.length)))
